@@ -32,8 +32,12 @@ public class WorkoutManager extends JFrame {
     private JComboBox workoutMovementsCB;
     private JSpinner dateSpinner;
 
+    private WorkoutDB workoutDB;
 
-    WorkoutManager() {
+    WorkoutManager(WorkoutDB workoutDB) {
+        
+        this.workoutDB = workoutDB;
+        
         setContentPane(MainJPanel);
         setPreferredSize(new Dimension(600, 600));
         pack();
@@ -75,12 +79,7 @@ public class WorkoutManager extends JFrame {
         WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, start, end);
 
         try {
-
-            //workoutDB.addNewWorkout(workoutModel);
-
-
-
-
+            workoutDB.addNewWorkout(workoutModel);
         } catch (Exception exe) {
             System.out.println("Error adding Workout to the DB" + exe);
         }

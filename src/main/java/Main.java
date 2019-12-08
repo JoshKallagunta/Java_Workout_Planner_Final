@@ -7,7 +7,7 @@ public class Main {
 
         WorkoutDB workoutDB = new WorkoutDB(database);
 
-        WorkoutManager gui = new WorkoutManager();
+        WorkoutManager gui = new WorkoutManager(workoutDB);
 
 
 
