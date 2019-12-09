@@ -51,21 +51,15 @@ public class WorkoutModel {
         this.workoutDate = workoutDate;
     }
 
-    public int getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
-        return endTime;
-    }
 
-    public void setEndTime(int endTime) {
-        this.endTime = endTime;
-    }
 
     String workoutName;
 
@@ -76,8 +70,8 @@ public class WorkoutModel {
         int workoutWeight;
 
         String workoutDate;
-        int startTime;
-        int endTime;
+        String startTime;
+
 
 
 //        WorkoutModel(String workoutName) {
@@ -85,14 +79,14 @@ public class WorkoutModel {
 //        }
 
 
-        public WorkoutModel(String workoutName, String workoutBodyPart, String workoutMovements, int workoutWeight, String workoutDate, int startTime, int endTime) {
+        public WorkoutModel(String workoutName, String workoutBodyPart, String workoutMovements, int workoutWeight, String workoutDate, String startTime) {
             this.workoutName = workoutName;
             this.workoutBodyPart = workoutBodyPart;
             this.workoutMovements = workoutMovements;
             this.workoutWeight = workoutWeight;
             this.workoutDate = workoutDate;
             this.startTime = startTime;
-            this.endTime = endTime;
+
 
         }
 
@@ -100,7 +94,7 @@ public class WorkoutModel {
         @Override
         public String toString() {
 
-            return "You have created a new workout: " + workoutName + "with movements " + workoutBodyPart + "at " + workoutDate + startTime + "to " + endTime;
+            return "You have created a new workout: " + workoutName + " with movements " + workoutBodyPart + " at " + workoutDate + " to " + startTime;
         }
 
 }

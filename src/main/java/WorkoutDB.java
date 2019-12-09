@@ -6,7 +6,7 @@ public class WorkoutDB {
     private String db_url;
 
 
-    public WorkoutDB(String database) {
+    WorkoutDB(String database) {
 
         this.db_url = database;
 
@@ -14,7 +14,7 @@ public class WorkoutDB {
         try (Connection connection = DriverManager.getConnection(db_url);
              Statement statement = connection.createStatement() ) {
 
-            String createWorkoutTable = "CREATE TABLE IF NOT EXISTS workout (name text UNIQUE, bodypart text, movements text, weight integer, dateinput text, starttime integer, endtime integer)";
+            String createWorkoutTable = "CREATE TABLE IF NOT EXISTS workout (name text UNIQUE, bodypart text, movements text, weight integer, dateinput text, enddateinput text)";
             statement.execute(createWorkoutTable);
 
 
@@ -31,15 +31,14 @@ public class WorkoutDB {
     public void addNewWorkout(WorkoutModel workoutModel) {
 
         try (Connection connection = DriverManager.getConnection(db_url);
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO workout values (?, ?, ?, ?, ?, ?, ?,)")  ) {
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO workout values (?, ?, ?, ?, ?, ?)")  ) {
 
             preparedStatement.setString(1, workoutModel.getWorkoutName());
             preparedStatement.setString(2, workoutModel.getWorkoutBodyPart());
             preparedStatement.setString(3, workoutModel.getWorkoutMovements());
             preparedStatement.setInt(4, workoutModel.getWorkoutWeight());
             preparedStatement.setString(5, workoutModel.getWorkoutDate());
-            preparedStatement.setInt(6, workoutModel.getStartTime());
-            preparedStatement.setInt(7, workoutModel.getEndTime());
+            preparedStatement.setString(6, workoutModel.getStartTime());
 
 
             preparedStatement.executeUpdate();

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -12,15 +13,10 @@ import java.util.Date;
 
 public class WorkoutManager extends JFrame {
 
-
     private JPanel MainJPanel;
     private JPanel AddNewWorkoutJPanel;
     private JTextField workoutNameTB;
     private JComboBox bodyPartTB;
-    private JTextField textField1;
-    private JLabel numOfSetsTB;
-    private JTextField textField2;
-    private JLabel numOfRepsTB;
     private JTextField WeightTB;
     private JLabel numOfWeightTB;
     private JLabel dateLabel;
@@ -30,10 +26,18 @@ public class WorkoutManager extends JFrame {
     private JTable table1;
     private JButton addToCalendarButton;
     private JComboBox workoutMovementsCB;
-    private JSpinner dateSpinner;
+    private JSpinner dateStartSpinner;
+    private JSpinner endDateSpinner;
+
+    private WorkoutDB workoutDB;
 
 
-    WorkoutManager() {
+
+    WorkoutManager(WorkoutDB workoutDB) {
+
+        this.workoutDB = workoutDB;
+
+
         setContentPane(MainJPanel);
         setPreferredSize(new Dimension(600, 600));
         pack();
@@ -41,8 +45,10 @@ public class WorkoutManager extends JFrame {
         setVisible(true);
 
         configureDateSpinner();
-        //populateBodyPartCB();
-        //populateMovementCB();
+        configureEndDateSpinner();
+        populateBodyPartCB();
+        populateMovementCB();
+
 
 
 
@@ -66,18 +72,15 @@ public class WorkoutManager extends JFrame {
         String movements = workoutMovementsCB.getSelectedItem().toString();
         int weight = Integer.parseInt(WeightTB.getText());
 
-        String date = new SimpleDateFormat("YYYY, mm, DD").format(dateSpinner.getValue());
-
-        int start = Integer.parseInt(startTime.getText());
-        int end = Integer.parseInt(endTime.getText());
+        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dateStartSpinner.getValue());
+        String endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDateSpinner.getValue());
 
 
-        WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, start, end);
+        WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, endDate);
 
         try {
 
-            //workoutDB.addNewWorkout(workoutModel);
-
+            workoutDB.addNewWorkout(workoutModel);
 
 
 
@@ -93,21 +96,36 @@ public class WorkoutManager extends JFrame {
 
         // Dates between Jan 1, 1970 and some time in 2920. I don't suppose this program will be around this long though...
         SpinnerDateModel spinnerDateModel = new SpinnerDateModel(new Date(), new Date(0), new Date(30000000000000L), Calendar.DAY_OF_YEAR);
-        dateSpinner.setModel(spinnerDateModel);
+        dateStartSpinner.setModel(spinnerDateModel);
         // Create a DateEditor to configure the way dates are displayed and edited
         // Define format the dates will have
-        JSpinner.DateEditor editor = new JSpinner.DateEditor(dateSpinner, "YYYY-mm-dd");
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(dateStartSpinner, "yyyy-MM-dd HH:mm:ss");
         DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
         // Attempt to prevent invalid input
         formatter.setAllowsInvalid(false);
         // Allow user to type as well as use up/down buttons
         formatter.setOverwriteMode(true);
         // And tell the serviceDataSpinner to use this Editor
-        dateSpinner.setEditor(editor);
+        dateStartSpinner.setEditor(editor);
+
 
         //yyyy-mm-dd
 
     }
+
+    private void configureEndDateSpinner(){
+        SpinnerDateModel spinnerDateModel = new SpinnerDateModel(new Date(), new Date(0), new Date(3000000000000L), Calendar.DAY_OF_YEAR);
+        endDateSpinner.setModel(spinnerDateModel);
+
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd HH:mm:ss");
+        DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
+
+        formatter.setAllowsInvalid(false);
+        formatter.setOverwriteMode(true);
+
+        endDateSpinner.setEditor(editor);
+    }
+
 
     private void populateBodyPartCB(){
         for (String bodyParts : WorkoutModel.bodyParts ) {

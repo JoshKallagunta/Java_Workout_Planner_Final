@@ -55,21 +55,17 @@
       <Position>5</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="18" parent="7" name="starttime">
+    <column id="18" parent="7" name="enddateinput">
       <Position>6</Position>
-      <DataType>integer|0s</DataType>
+      <DataType>text|0s</DataType>
     </column>
-    <column id="19" parent="7" name="endtime">
-      <Position>7</Position>
-      <DataType>integer|0s</DataType>
-    </column>
-    <index id="20" parent="7" name="sqlite_autoindex_workout_1">
+    <index id="19" parent="7" name="sqlite_autoindex_workout_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>name</ColNames>
       <ColumnCollations></ColumnCollations>
       <Unique>1</Unique>
     </index>
-    <key id="21" parent="7">
+    <key id="20" parent="7">
       <ColNames>name</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_workout_1</UnderlyingIndexName>
     </key>
