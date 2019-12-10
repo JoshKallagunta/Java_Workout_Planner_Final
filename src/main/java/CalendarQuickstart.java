@@ -12,6 +12,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 
 import java.io.FileNotFoundException;
@@ -20,10 +21,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 
-    public class CalendarQuickstart {
+public class CalendarQuickstart {
         private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
         private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
         private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -59,34 +62,47 @@ import java.util.List;
             return new AuthorizationCodeInstalledApp(flow, receiver).authorize("josh.kallatest");
         }
 
-        public static void main(String... args) throws IOException, GeneralSecurityException {
-            // Build a new authorized API client service.
-            final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                    .setApplicationName(APPLICATION_NAME)
-                    .build();
+//        public static void main(String... args) throws IOException, GeneralSecurityException {
+//            // Build a new authorized API client service.
+//            final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+//            Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+//                    .setApplicationName(APPLICATION_NAME)
+//                    .build();
+//
+//            // List the next 10 events from the primary calendar.
+//            DateTime now = new DateTime(System.currentTimeMillis());
+//            Events events = service.events().list("primary")
+//                    .setMaxResults(10)
+//                    .setTimeMin(now)
+//                    .setOrderBy("startTime")
+//                    .setSingleEvents(true)
+//                    .execute();
+//            List<Event> items = events.getItems();
+//            if (items.isEmpty()) {
+//                System.out.println("No upcoming events found.");
+//            } else {
+//                System.out.println("Upcoming events");
+//                for (Event event : items) {
+//                    DateTime start = event.getStart().getDateTime();
+//                    if (start == null) {
+//                        start = event.getStart().getDate();
+//                    }
+//                    System.out.printf("%s (%s)\n", event.getSummary(), start);
+//                }
+//            }
+//        }
 
-            // List the next 10 events from the primary calendar.
-            DateTime now = new DateTime(System.currentTimeMillis());
-            Events events = service.events().list("primary")
-                    .setMaxResults(10)
-                    .setTimeMin(now)
-                    .setOrderBy("startTime")
-                    .setSingleEvents(true)
-                    .execute();
-            List<Event> items = events.getItems();
-            if (items.isEmpty()) {
-                System.out.println("No upcoming events found.");
-            } else {
-                System.out.println("Upcoming events");
-                for (Event event : items) {
-                    DateTime start = event.getStart().getDateTime();
-                    if (start == null) {
-                        start = event.getStart().getDate();
-                    }
-                    System.out.printf("%s (%s)\n", event.getSummary(), start);
-                }
-            }
-        }
+//        public static Event newEvent(String workoutName, String workoutBodyPart, String movements, int weight, String date, String endingDate ) {
+//            Event event = new Event();
+//            event.setSummary(workoutName);
+//            DateTime startDateTime = new DateTime();
+//            Date endDate = new Date(startDate.getTime());
+//            DateTime start = new DateTime(startDate, TimeZone.getTimeZone("UTC"));
+//            event.setStart(new EventDateTime().setDateTime(start));
+//            DateTime end = new DateTime(endDate, TimeZone.getTimeZone("UTC"));
+//            event.setEnd(new EventDateTime().setDateTime(end));
+//            return event;
+//        }
+
     }
 

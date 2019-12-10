@@ -1,14 +1,15 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-
-
+import java.util.*;
+import java.util.List;
 
 
 public class WorkoutManager extends JFrame {
@@ -17,19 +18,25 @@ public class WorkoutManager extends JFrame {
     private JPanel AddNewWorkoutJPanel;
     private JTextField workoutNameTB;
     private JComboBox bodyPartTB;
-    private JTextField WeightTB;
+    //private JTextField WeightTB;
     private JLabel numOfWeightTB;
     private JLabel dateLabel;
     private JTextField startTime;
     private JTextField endTime;
     private JButton saveButton;
-    private JTable table1;
+    private JTable workoutShowTable;
     private JButton addToCalendarButton;
     private JComboBox workoutMovementsCB;
     private JSpinner dateStartSpinner;
     private JSpinner endDateSpinner;
+    private JTextField weightTB;
+    private JButton newGuiBTTN;
 
+    //DB initlization
     private WorkoutDB workoutDB;
+
+    //
+    DefaultTableModel workoutTableModel = new DefaultTableModel();
 
 
 
@@ -44,11 +51,15 @@ public class WorkoutManager extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 
+        //
         configureDateSpinner();
         configureEndDateSpinner();
+        //
         populateBodyPartCB();
         populateMovementCB();
 
+        //
+        workoutShowTable.setModel(workoutTableModel);
 
 
 
@@ -56,7 +67,28 @@ public class WorkoutManager extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                if (workoutNameTB.getText().isEmpty() || weightTB.getText().isEmpty() ) {
+
+                    MessageDialogPopUp("Please enter in a Workout Name and or Weight", "");
+
+                }
+
                 addWorkout();
+
+                populateJTable();
+
+
+
+            }
+        });
+        newGuiBTTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                setVisible(false);
+
+                new ViewSavedWorkouts();
+
 
             }
         });
@@ -68,9 +100,11 @@ public class WorkoutManager extends JFrame {
     protected void addWorkout(){
 
         String workoutName = workoutNameTB.getText();
+        //Rid of whitespace
+        workoutName = workoutName.trim();
         String workoutBodyPart = bodyPartTB.getSelectedItem().toString();
         String movements = workoutMovementsCB.getSelectedItem().toString();
-        int weight = Integer.parseInt(WeightTB.getText());
+        int weight = Integer.parseInt(weightTB.getText());
 
         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dateStartSpinner.getValue());
         String endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDateSpinner.getValue());
@@ -83,7 +117,6 @@ public class WorkoutManager extends JFrame {
             workoutDB.addNewWorkout(workoutModel);
 
 
-
         } catch (Exception exe) {
             System.out.println("Error adding Workout to the DB" + exe);
         }
@@ -92,31 +125,89 @@ public class WorkoutManager extends JFrame {
 
     }
 
-    private void configureDateSpinner() {
+    protected void addWorkoutToGoogleCalendar(){
 
-        // Dates between Jan 1, 1970 and some time in 2920. I don't suppose this program will be around this long though...
-        SpinnerDateModel spinnerDateModel = new SpinnerDateModel(new Date(), new Date(0), new Date(30000000000000L), Calendar.DAY_OF_YEAR);
-        dateStartSpinner.setModel(spinnerDateModel);
-        // Create a DateEditor to configure the way dates are displayed and edited
-        // Define format the dates will have
-        JSpinner.DateEditor editor = new JSpinner.DateEditor(dateStartSpinner, "yyyy-MM-dd HH:mm:ss");
-        DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
-        // Attempt to prevent invalid input
-        formatter.setAllowsInvalid(false);
-        // Allow user to type as well as use up/down buttons
-        formatter.setOverwriteMode(true);
-        // And tell the serviceDataSpinner to use this Editor
-        dateStartSpinner.setEditor(editor);
+        String workoutName = workoutNameTB.getText();
+        //Rid of whitespace
+        workoutName = workoutName.trim();
+        String workoutBodyPart = bodyPartTB.getSelectedItem().toString();
+        String movements = workoutMovementsCB.getSelectedItem().toString();
+        int weight = Integer.parseInt(weightTB.getText());
+
+        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dateStartSpinner.getValue());
+        String endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDateSpinner.getValue());
 
 
-        //yyyy-mm-dd
+        WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, endDate);
+
+        try {
+
+
+            //CalendarQuickstart.newEvent(workoutModel);
+
+
+        } catch (Exception exe) {
+            System.out.println("Error adding Workout to the DB" + exe);
+        }
 
     }
 
+    //
+    protected static Vector<String> getColumnNames(){
+
+        Vector<String> columnNames  = new Vector<>();
+
+        columnNames.add("Workout Name");
+        columnNames.add("Bodypart");
+        columnNames.add("Movements");
+        columnNames.add("Weight");
+        columnNames.add("Start Date / Time");
+        columnNames.add("End Date / Time");
+
+        return columnNames;
+
+    }
+
+
+    //
+    protected void populateJTable() {
+
+        Vector<Vector> workoutModelVector = workoutDB.getAllWorkouts();
+
+        Vector workoutData = workoutModelVector;
+        Vector getAllColumnNames = getColumnNames();
+
+        workoutTableModel.setDataVector(workoutData, getAllColumnNames );
+
+
+        }
+
+
+
+
+    //
+    private void configureDateSpinner() {
+
+        SpinnerDateModel spinnerDateModel = new SpinnerDateModel(new Date(), new Date(0), new Date(30000000000000L), Calendar.DAY_OF_YEAR);
+        dateStartSpinner.setModel(spinnerDateModel);
+
+        //
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(dateStartSpinner, "yyyy-MM-dd HH:mm:ss");
+        DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
+
+        formatter.setAllowsInvalid(false);
+        formatter.setOverwriteMode(true);
+
+        dateStartSpinner.setEditor(editor);
+
+    }
+
+    //
     private void configureEndDateSpinner(){
         SpinnerDateModel spinnerDateModel = new SpinnerDateModel(new Date(), new Date(0), new Date(3000000000000L), Calendar.DAY_OF_YEAR);
         endDateSpinner.setModel(spinnerDateModel);
 
+        //
         JSpinner.DateEditor editor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd HH:mm:ss");
         DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
 
@@ -127,6 +218,7 @@ public class WorkoutManager extends JFrame {
     }
 
 
+    //
     private void populateBodyPartCB(){
         for (String bodyParts : WorkoutModel.bodyParts ) {
 
@@ -135,6 +227,7 @@ public class WorkoutManager extends JFrame {
         }
     }
 
+    //
     private void populateMovementCB() {
         for (String movements : WorkoutModel.movements ) {
 
@@ -142,6 +235,10 @@ public class WorkoutManager extends JFrame {
         }
     }
 
+    //
+    String MessageDialogPopUp(String message, String initialValue) {
+        return JOptionPane.showInputDialog(this, message, initialValue);
+    }
 
 
 }
