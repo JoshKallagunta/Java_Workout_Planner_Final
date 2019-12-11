@@ -21,7 +21,7 @@ public class ViewSavedWorkouts extends JFrame {
 
 
 
-    public ViewSavedWorkouts(WorkoutDB workoutDB) {
+    public ViewSavedWorkouts() {
 
         this.workoutDB = workoutDB;
         setContentPane(viewEditDeletePanel);

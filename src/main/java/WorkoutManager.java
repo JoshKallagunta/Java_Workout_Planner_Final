@@ -93,7 +93,7 @@ public class WorkoutManager extends JFrame {
 
                 dispose();
 
-                //new ViewSavedWorkouts();
+                new ViewSavedWorkouts();
 
             }
         });
