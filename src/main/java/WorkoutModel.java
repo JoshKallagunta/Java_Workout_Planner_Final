@@ -74,11 +74,6 @@ public class WorkoutModel {
 
 
 
-//        WorkoutModel(String workoutName) {
-//            this.workoutName = workoutName;
-//        }
-
-
         public WorkoutModel(String workoutName, String workoutBodyPart, String workoutMovements, int workoutWeight, String workoutDate, String startTime) {
             this.workoutName = workoutName;
             this.workoutBodyPart = workoutBodyPart;

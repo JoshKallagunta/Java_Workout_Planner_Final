@@ -122,7 +122,6 @@ public class WorkoutDB {
                 String dateInput = workoutRS.getString("dateinput");
                 String endDateInput = workoutRS.getString("enddateinput");
 
-               // WorkoutModel workoutModel = new WorkoutModel(name, bodypart, movements, weight, dateInput, endDateInput);
 
                 //
                 Vector vector = new Vector();
@@ -140,6 +139,7 @@ public class WorkoutDB {
             }
 
             return workoutModelVector;
+
 
         } catch (SQLException sqle) {
             throw new RuntimeException("Error getting all Workouts: " + sqle);

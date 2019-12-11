@@ -92,17 +92,36 @@ public class CalendarQuickstart {
 //            }
 //        }
 
-//        public static Event newEvent(String workoutName, String workoutBodyPart, String movements, int weight, String date, String endingDate ) {
-//            Event event = new Event();
-//            event.setSummary(workoutName);
-//            DateTime startDateTime = new DateTime();
-//            Date endDate = new Date(startDate.getTime());
-//            DateTime start = new DateTime(startDate, TimeZone.getTimeZone("UTC"));
-//            event.setStart(new EventDateTime().setDateTime(start));
-//            DateTime end = new DateTime(endDate, TimeZone.getTimeZone("UTC"));
-//            event.setEnd(new EventDateTime().setDateTime(end));
-//            return event;
-//        }
+
+
+
+
+    public static Event myNewEvent(String summary, String bodyPart, String movements, int weight, String startingDate, String endingDate){
+        Event event = new Event()
+                .setSummary(summary)
+                //.setLocation("800 Howard St., San Francisco, CA 94103")
+                .setDescription("Bodypart: " + bodyPart + " with movements: " + movements + " using: " + weight + " lbs ");
+
+        DateTime startDateTime = new DateTime(startingDate);
+        EventDateTime start = new EventDateTime()
+                .setDateTime(startDateTime);
+                //.setTimeZone("America/Los_Angeles");
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime(endingDate);
+        EventDateTime end = new EventDateTime()
+                .setDateTime(endDateTime);
+                //.setTimeZone("America/Los_Angeles");
+        event.setEnd(end);
+
+        return event;
+
+
+    }
+
+
+
+
 
     }
 

@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.List;
 
 
+
 public class WorkoutManager extends JFrame {
 
     private JPanel MainJPanel;
@@ -85,11 +86,22 @@ public class WorkoutManager extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                setVisible(false);
 
-                new ViewSavedWorkouts();
+                //Add Are you sure you want to leave
 
+                //if or switch statement
 
+                dispose();
+
+                //new ViewSavedWorkouts();
+
+            }
+        });
+        addToCalendarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                addWorkoutToGoogleCalendar();
             }
         });
     }
@@ -106,8 +118,8 @@ public class WorkoutManager extends JFrame {
         String movements = workoutMovementsCB.getSelectedItem().toString();
         int weight = Integer.parseInt(weightTB.getText());
 
-        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dateStartSpinner.getValue());
-        String endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDateSpinner.getValue());
+        String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(dateStartSpinner.getValue());
+        String endDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(endDateSpinner.getValue());
 
 
         WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, endDate);
@@ -134,16 +146,16 @@ public class WorkoutManager extends JFrame {
         String movements = workoutMovementsCB.getSelectedItem().toString();
         int weight = Integer.parseInt(weightTB.getText());
 
-        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dateStartSpinner.getValue());
-        String endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDateSpinner.getValue());
+        String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(dateStartSpinner.getValue());
+        String endDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(endDateSpinner.getValue());
 
 
-        WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, endDate);
+        //WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, endDate);
 
         try {
 
+            CalendarQuickstart.myNewEvent(workoutName, workoutBodyPart, movements, weight, date, endDate);
 
-            //CalendarQuickstart.newEvent(workoutModel);
 
 
         } catch (Exception exe) {
@@ -151,6 +163,7 @@ public class WorkoutManager extends JFrame {
         }
 
     }
+
 
     //
     protected static Vector<String> getColumnNames(){
@@ -179,9 +192,7 @@ public class WorkoutManager extends JFrame {
 
         workoutTableModel.setDataVector(workoutData, getAllColumnNames );
 
-
         }
-
 
 
 
@@ -192,7 +203,7 @@ public class WorkoutManager extends JFrame {
         dateStartSpinner.setModel(spinnerDateModel);
 
         //
-        JSpinner.DateEditor editor = new JSpinner.DateEditor(dateStartSpinner, "yyyy-MM-dd HH:mm:ss");
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(dateStartSpinner, "yyyy-MM-dd'T'HH:mm:ssXXX");
         DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
 
         formatter.setAllowsInvalid(false);
@@ -208,7 +219,7 @@ public class WorkoutManager extends JFrame {
         endDateSpinner.setModel(spinnerDateModel);
 
         //
-        JSpinner.DateEditor editor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd HH:mm:ss");
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd'T'HH:mm:ssXXX");
         DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
 
         formatter.setAllowsInvalid(false);
