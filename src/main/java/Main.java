@@ -9,7 +9,7 @@ public class Main {
 
         WorkoutManager gui = new WorkoutManager(workoutDB);
 
-        //CalendarQuickstart.addEvent(event);
+        //CalendarQuickstart.myNewEvent();
 
 
 

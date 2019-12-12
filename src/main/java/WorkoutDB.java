@@ -8,7 +8,10 @@ public class WorkoutDB {
 
     private String db_url;
 
-
+    /**
+     *
+     * @param database
+     */
     WorkoutDB(String database) {
 
         this.db_url = database;
@@ -17,7 +20,8 @@ public class WorkoutDB {
         try (Connection connection = DriverManager.getConnection(db_url);
              Statement statement = connection.createStatement() ) {
 
-            String createWorkoutTable = "CREATE TABLE IF NOT EXISTS workout (name text UNIQUE, bodypart text, movements text, weight integer, dateinput text, enddateinput text)";
+            String createWorkoutTable = "CREATE TABLE IF NOT EXISTS workout (name text UNIQUE, bodypart text, movements text," +
+                    " weight integer, dateinput text, enddateinput text)";
             statement.execute(createWorkoutTable);
 
 
@@ -30,7 +34,10 @@ public class WorkoutDB {
 
     }
 
-
+    /**
+     *
+     * @param workoutModel
+     */
     public void addNewWorkout(WorkoutModel workoutModel) {
 
         try (Connection connection = DriverManager.getConnection(db_url);
@@ -52,25 +59,29 @@ public class WorkoutDB {
         }
     }
 
+//
+//    public void ReloadTableData(WorkoutModel workoutModel) {
+//
+//        try (Connection connection = DriverManager.getConnection(db_url);
+//             PreparedStatement preparedStatement = connection.prepareStatement("SELECT rowid, name, bodypart, movements, weight, dateinput, enddateinput") ) {
+//
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//
+//        } catch (SQLException sqle) {
+//            System.out.println("Error getting data from the Workout table" + sqle);
+//        }
+//
+//    }
 
-    public void ReloadTableData(WorkoutModel workoutModel) {
-
-        try (Connection connection = DriverManager.getConnection(db_url);
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT rowid, name, bodypart, movements, weight, dateinput, enddateinput") ) {
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-
-        } catch (SQLException sqle) {
-            System.out.println("Error getting data from the Workout table" + sqle);
-        }
-
-    }
-
+    /**
+     *
+     * @param workoutModel
+     */
     public void DeleteWorkout(WorkoutModel workoutModel) {
 
         try (Connection connection = DriverManager.getConnection(db_url);
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM workout WHERE name = ?") ){
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM workout WHERE name LIKE (?)") ){
 
             preparedStatement.setString(1, workoutModel.getWorkoutName());
 
@@ -83,27 +94,32 @@ public class WorkoutDB {
 
     }
 
-    public void UpdateWorkout(WorkoutModel workoutModel) {
+//    public void UpdateWorkout(WorkoutModel workoutModel) {
+//
+//        try (Connection connection = DriverManager.getConnection(db_url);
+//             PreparedStatement update = connection.prepareStatement("UPDATE workout SET name = ?, bodypart = ?, movements = ?, weight = ?, dateinput = ?, enddateinput = ?, WHERE rowid = ? ") ){
+//
+//            update.setString(1, workoutModel.getWorkoutName());
+//            update.setString(2, workoutModel.getWorkoutBodyPart());
+//            update.setString(3, workoutModel.getWorkoutMovements());
+//            update.setInt(4, workoutModel.getWorkoutWeight());
+//            update.setString(5, workoutModel.getWorkoutDate());
+//            update.setString(6, workoutModel.getStartTime());
+//
+//
+//            update.executeUpdate();
+//
+//        } catch (SQLException sqle){
+//            System.out.println("Error deleting Product: " + sqle);
+//        }
+//
+//    }
+//
 
-        try (Connection connection = DriverManager.getConnection(db_url);
-             PreparedStatement update = connection.prepareStatement("UPDATE workout SET name = ?, bodypart = ?, movements = ?, weight = ?, dateinput = ?, enddateinput = ?, WHERE rowid = ? ") ){
-
-            update.setString(1, workoutModel.getWorkoutName());
-            update.setString(2, workoutModel.getWorkoutBodyPart());
-            update.setString(3, workoutModel.getWorkoutMovements());
-            update.setInt(4, workoutModel.getWorkoutWeight());
-            update.setString(5, workoutModel.getWorkoutDate());
-            update.setString(6, workoutModel.getStartTime());
-
-
-            update.executeUpdate();
-
-        } catch (SQLException sqle){
-            System.out.println("Error deleting Product: " + sqle);
-        }
-
-    }
-
+    /**
+     *
+     * @return
+     */
     public Vector<Vector> getAllWorkouts() {
 
         try (Connection connection = DriverManager.getConnection(db_url);
