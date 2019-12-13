@@ -2,14 +2,19 @@ import java.util.Date;
 
 public class WorkoutModel {
 
+    /**
+     *
+     */
     //Array that contains the Body Parts that workoutNames will be based off of
     //Called in GUI combo box
     public static String[] bodyParts = {"Chest", "Back", "Legs", "Full Body"};
     public static String[] movements = {"Bench Press", "Dead Lift", "Squat"};
 
 
-
-
+    /**
+     *
+     * @return
+     */
     public String getWorkoutName() {
         return workoutName;
     }
@@ -60,7 +65,9 @@ public class WorkoutModel {
     }
 
 
-
+    /**
+     *
+     */
     String workoutName;
 
         String workoutBodyPart;
@@ -73,7 +80,15 @@ public class WorkoutModel {
         String startTime;
 
 
-
+    /**
+     *
+     * @param workoutName
+     * @param workoutBodyPart
+     * @param workoutMovements
+     * @param workoutWeight
+     * @param workoutDate
+     * @param startTime
+     */
         public WorkoutModel(String workoutName, String workoutBodyPart, String workoutMovements, int workoutWeight, String workoutDate, String startTime) {
             this.workoutName = workoutName;
             this.workoutBodyPart = workoutBodyPart;
@@ -85,7 +100,10 @@ public class WorkoutModel {
 
         }
 
-
+    /**
+     *
+     * @return
+     */
         @Override
         public String toString() {
 

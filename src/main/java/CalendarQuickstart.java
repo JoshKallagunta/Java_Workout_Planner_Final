@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 
+//Google provided code for Auth Access
 public class CalendarQuickstart {
         private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
         private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -35,7 +36,7 @@ public class CalendarQuickstart {
          * Global instance of the scopes required by this quickstart.
          * If modifying these scopes, delete your previously saved tokens/ folder.
          */
-        private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
+        private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
         private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
         /**
@@ -59,69 +60,56 @@ public class CalendarQuickstart {
                     .setAccessType("offline")
                     .build();
             LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-            return new AuthorizationCodeInstalledApp(flow, receiver).authorize("josh.kallatest");
+            return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+
         }
 
-//        public static void main(String... args) throws IOException, GeneralSecurityException {
-//            // Build a new authorized API client service.
-//            final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-//            Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-//                    .setApplicationName(APPLICATION_NAME)
-//                    .build();
-//
-//            // List the next 10 events from the primary calendar.
-//            DateTime now = new DateTime(System.currentTimeMillis());
-//            Events events = service.events().list("primary")
-//                    .setMaxResults(10)
-//                    .setTimeMin(now)
-//                    .setOrderBy("startTime")
-//                    .setSingleEvents(true)
-//                    .execute();
-//            List<Event> items = events.getItems();
-//            if (items.isEmpty()) {
-//                System.out.println("No upcoming events found.");
-//            } else {
-//                System.out.println("Upcoming events");
-//                for (Event event : items) {
-//                    DateTime start = event.getStart().getDateTime();
-//                    if (start == null) {
-//                        start = event.getStart().getDate();
-//                    }
-//                    System.out.printf("%s (%s)\n", event.getSummary(), start);
-//                }
-//            }
-//        }
 
+    /**
+     *
+     * @param summary
+     * @param bodyPart
+     * @param movements
+     * @param weight
+     * @param startingDate
+     * @param endingDate
+     * @return
+     * @throws IOException
+     * @throws GeneralSecurityException
+     */
+    public static Event myNewEvent(String summary, String bodyPart, String movements, int weight, String startingDate, String endingDate) throws IOException, GeneralSecurityException {
 
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
 
-
-
-    public static Event myNewEvent(String summary, String bodyPart, String movements, int weight, String startingDate, String endingDate){
-        Event event = new Event()
+        Event myEvent = new Event()
                 .setSummary(summary)
-                //.setLocation("800 Howard St., San Francisco, CA 94103")
-                .setDescription("Bodypart: " + bodyPart + " with movements: " + movements + " using: " + weight + " lbs ");
+                .setDescription("Bodypart: " + bodyPart + ", with movements: " + movements + ", using: " + weight + "lbs ");
 
         DateTime startDateTime = new DateTime(startingDate);
         EventDateTime start = new EventDateTime()
                 .setDateTime(startDateTime);
-                //.setTimeZone("America/Los_Angeles");
-        event.setStart(start);
+                //.setTimeZone("America/Chicago");
+        myEvent.setStart(start);
 
         DateTime endDateTime = new DateTime(endingDate);
         EventDateTime end = new EventDateTime()
                 .setDateTime(endDateTime);
-                //.setTimeZone("America/Los_Angeles");
-        event.setEnd(end);
+                //.setTimeZone("America/Chicago");
+        myEvent.setEnd(end);
 
-        return event;
+        //
+        String calId = "primary";
+
+        //
+        myEvent = service.events().insert(calId, myEvent).execute();
+
+        return myEvent;
 
 
     }
-
-
-
-
 
     }
 

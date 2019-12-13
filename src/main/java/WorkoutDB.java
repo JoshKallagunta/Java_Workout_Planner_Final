@@ -59,31 +59,17 @@ public class WorkoutDB {
         }
     }
 
-//
-//    public void ReloadTableData(WorkoutModel workoutModel) {
-//
-//        try (Connection connection = DriverManager.getConnection(db_url);
-//             PreparedStatement preparedStatement = connection.prepareStatement("SELECT rowid, name, bodypart, movements, weight, dateinput, enddateinput") ) {
-//
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//
-//        } catch (SQLException sqle) {
-//            System.out.println("Error getting data from the Workout table" + sqle);
-//        }
-//
-//    }
 
     /**
      *
-     * @param workoutModel
+     * @param WorkoutName
      */
-    public void DeleteWorkout(WorkoutModel workoutModel) {
+    public void DeleteWorkout(String WorkoutName) {
 
         try (Connection connection = DriverManager.getConnection(db_url);
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM workout WHERE name LIKE (?)") ){
 
-            preparedStatement.setString(1, workoutModel.getWorkoutName());
+            preparedStatement.setString(1, WorkoutName);
 
             preparedStatement.executeUpdate();
 
@@ -91,30 +77,7 @@ public class WorkoutDB {
             System.out.println("Error deleting Product: " + sqle);
         }
 
-
     }
-
-//    public void UpdateWorkout(WorkoutModel workoutModel) {
-//
-//        try (Connection connection = DriverManager.getConnection(db_url);
-//             PreparedStatement update = connection.prepareStatement("UPDATE workout SET name = ?, bodypart = ?, movements = ?, weight = ?, dateinput = ?, enddateinput = ?, WHERE rowid = ? ") ){
-//
-//            update.setString(1, workoutModel.getWorkoutName());
-//            update.setString(2, workoutModel.getWorkoutBodyPart());
-//            update.setString(3, workoutModel.getWorkoutMovements());
-//            update.setInt(4, workoutModel.getWorkoutWeight());
-//            update.setString(5, workoutModel.getWorkoutDate());
-//            update.setString(6, workoutModel.getStartTime());
-//
-//
-//            update.executeUpdate();
-//
-//        } catch (SQLException sqle){
-//            System.out.println("Error deleting Product: " + sqle);
-//        }
-//
-//    }
-//
 
     /**
      *
@@ -151,7 +114,6 @@ public class WorkoutDB {
 
                 workoutModelVector.add(vector);
 
-
             }
 
             return workoutModelVector;
@@ -163,8 +125,6 @@ public class WorkoutDB {
         }
 
         }
-
-
 
     }
 

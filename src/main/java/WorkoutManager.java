@@ -27,6 +27,7 @@ public class WorkoutManager extends JFrame {
     private JSpinner endDateSpinner;
     private JTextField weightTB;
     private JButton quitButton;
+    private JButton deleteBTTN;
 
     //DB initlization
     private WorkoutDB workoutDB;
@@ -35,11 +36,12 @@ public class WorkoutManager extends JFrame {
     DefaultTableModel workoutTableModel = new DefaultTableModel();
 
 
-
+    /**
+     *
+     * @param workoutDB
+     */
     WorkoutManager(WorkoutDB workoutDB) {
-
         this.workoutDB = workoutDB;
-
 
         setContentPane(MainJPanel);
         setPreferredSize(new Dimension(900, 600));
@@ -68,7 +70,6 @@ public class WorkoutManager extends JFrame {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 boolean nameFound = false;
 
                 if (workoutNameTB.getText().isEmpty()) {
@@ -76,19 +77,20 @@ public class WorkoutManager extends JFrame {
                     MessageDialogPopUp("Please enter in a Workout Name", "");
 
                 } else {
-                    checkForDupe();
-                    nameFound = true;
+
+                        nameFound = checkForDupe();
+                        System.out.println("Hit");
+
+
                 }
+                if (!nameFound) {
 
-                if (nameFound == false) {
-
-                    //Calls addworkout(); adds the input to the DB
+                    //Calls addWorkout method, adds the input to the DB
                     addWorkout();
 
                     //Reloads the JTable with the new workout
                     populateJTable();
                 }
-
 
             }
         });
@@ -101,20 +103,18 @@ public class WorkoutManager extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-
                 //Add Are you sure you want to leave
 
                 //if or switch statement
 
                 dispose();
 
-
             }
         });
 
         /**
          * Action listener for the AddToCalendar button on the GUI
-         * Pushes the workout to Google Calendar through parmaters
+         * Pushes the workout to Google Calendar through parmaters from Gui input
          */
         addToCalendarButton.addActionListener(new ActionListener() {
             @Override
@@ -123,14 +123,23 @@ public class WorkoutManager extends JFrame {
                 addWorkoutToGoogleCalendar();
             }
         });
+        deleteBTTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                deleteWorkout();
+
+                populateJTable();
+
+            }
+        });
     }
 
     /**
      * Method that checks for a duplicate entry in the DB
      * Asks the user to enter a Unique name
      */
-    protected void checkForDupe() {
-
+    protected boolean checkForDupe() {
         //Gets all entries saved in the DB
         Vector<Vector> getAllWorkoutsVector = workoutDB.getAllWorkouts();
 
@@ -139,26 +148,30 @@ public class WorkoutManager extends JFrame {
         uniqueName = uniqueName.trim();
 
         if (uniqueName.isEmpty() ) {
-            return;
+            return false;
 
         } else {
             //For loop that iterates trough the vector of saved workouts, element index = name field, goes down the rows (element i)
             for (int i = 0; i < getAllWorkoutsVector.size(); i++) {
-                Object dupeName = getAllWorkoutsVector.elementAt(0);
-                Object iteration = getAllWorkoutsVector.elementAt(i);
+//                Object dupeName = getAllWorkoutsVector.elementAt(0);
+//                Object iteration = getAllWorkoutsVector.elementAt(i);
+
+                Vector dupeNameVector = getAllWorkoutsVector.elementAt(i);
+
+                String testName = (String) dupeNameVector.elementAt(0);
 
                 //If the element in the column name = the iteration, it is already in the DB
                 //Asks user to input a unique name
-                if (dupeName == iteration) {
+                if (testName.equalsIgnoreCase(uniqueName) ){
                     MessageDialogPopUp("The Name is already added, please enter a unique name! ", "");
+                    return true;
                 }
             }
 
         }
 
-
+        return false;
     }
-
 
     /**
      * Method that gets the user input from the GUI and adds it to the DB
@@ -188,8 +201,6 @@ public class WorkoutManager extends JFrame {
             System.out.println("Error adding Workout to the DB" + exe);
         }
 
-
-
     }
 
     /**
@@ -207,14 +218,9 @@ public class WorkoutManager extends JFrame {
         String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(dateStartSpinner.getValue());
         String endDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(endDateSpinner.getValue());
 
-
-        //WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, endDate);
-
         try {
 
             CalendarQuickstart.myNewEvent(workoutName, workoutBodyPart, movements, weight, date, endDate);
-
-
 
         } catch (Exception exe) {
             System.out.println("Error adding Workout to the DB" + exe);
@@ -222,24 +228,28 @@ public class WorkoutManager extends JFrame {
 
     }
 
+
     /**
      *
      */
 
-//    protected void deleteWorkout() {
-//
-//        int row = workoutShowTable.getSelectedRow();
-//
-//        Object obj = workoutTableModel.getValueAt(row, 0);
-//
-//
-//
-//
-//       // workoutDB.DeleteWorkout(obj);
-//
-//
-//
-//    }
+
+    protected void deleteWorkout() {
+
+        int row = workoutShowTable.getSelectedRow();
+
+        if (row < 0) {
+            System.out.println("message");
+            return;
+        }
+        final int column = workoutShowTable.getSelectedColumn();
+
+        Object obj = workoutShowTable.getValueAt(row,0);
+
+        workoutDB.DeleteWorkout(obj.toString());
+
+    }
+
 
 
     /**
@@ -280,7 +290,8 @@ public class WorkoutManager extends JFrame {
     /**
      * Configures the  Start date/time spinner, lets the user edit what is in the spinner
      * uses DateEditor for the format so that it is yyyy-MM-dd, HH:mm:ss.
-     * Example: 2019-12-12 01:30:00
+     * Example: 2019-12-12 01:30:00 (AM)
+     * Example 2019-12-12 14:30:00 (PM)
      */
     private void configureDateSpinner() {
 
@@ -301,14 +312,14 @@ public class WorkoutManager extends JFrame {
     /**
      * Configures the  End date/time spinner, lets the user edit what is in the spinner
      * uses DateEditor for the format so that it is yyyy-MM-dd, HH:mm:ss.
-     * Example: 2019-12-12 01:30:00
+     * Example: 2019-12-12 01:30:00 (AM)
+     * Example 2019-12-12 14:30:00 (PM)
      */
     private void configureEndDateSpinner(){
         SpinnerDateModel spinnerDateModel = new SpinnerDateModel(new Date(), new Date(0), new Date(3000000000000L), Calendar.DAY_OF_YEAR);
         endDateSpinner.setModel(spinnerDateModel);
 
         //
-        //yyyy-MM-dd'T'HH:mm:ssXXX
         JSpinner.DateEditor editor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd HH:mm:ss");
         DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
 
