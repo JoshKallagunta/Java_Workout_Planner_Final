@@ -3,7 +3,7 @@ import java.util.Date;
 public class WorkoutModel {
 
     /**
-     *
+     * Arrays of bodyparts and movements
      */
     //Array that contains the Body Parts that workoutNames will be based off of
     //Called in GUI combo box
@@ -12,7 +12,8 @@ public class WorkoutModel {
 
 
     /**
-     *
+     *Getters and setters of all the permaters used in the model
+     * Getters are used in the DB when adding a workout
      * @return
      */
     public String getWorkoutName() {
@@ -66,7 +67,7 @@ public class WorkoutModel {
 
 
     /**
-     *
+     * Used for setting up getters and setters, also used for setting up model
      */
     String workoutName;
 
@@ -81,7 +82,7 @@ public class WorkoutModel {
 
 
     /**
-     *
+     * Constructor for the workout model, takes all values that are used in the GUI / DB
      * @param workoutName
      * @param workoutBodyPart
      * @param workoutMovements
@@ -101,8 +102,8 @@ public class WorkoutModel {
         }
 
     /**
-     *
-     * @return
+     *  String that displays when the user has added a workout to the DB
+     * @return String Message
      */
         @Override
         public String toString() {

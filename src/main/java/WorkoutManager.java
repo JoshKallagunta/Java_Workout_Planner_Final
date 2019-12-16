@@ -14,7 +14,6 @@ public class WorkoutManager extends JFrame {
     private JPanel AddNewWorkoutJPanel;
     private JTextField workoutNameTB;
     private JComboBox bodyPartTB;
-    //private JTextField WeightTB;
     private JLabel numOfWeightTB;
     private JLabel dateLabel;
     private JTextField startTime;
@@ -32,7 +31,7 @@ public class WorkoutManager extends JFrame {
     //DB initlization
     private WorkoutDB workoutDB;
 
-    //
+    //Setting up default table model for the JTABLE
     DefaultTableModel workoutTableModel = new DefaultTableModel();
 
 
@@ -49,17 +48,17 @@ public class WorkoutManager extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 
-        //
+        //Configures both date spinners
         configureDateSpinner();
         configureEndDateSpinner();
-        //
+        //Populates both CBs from lists in the model
         populateBodyPartCB();
         populateMovementCB();
 
-        //
+        //Sets table model
         workoutShowTable.setModel(workoutTableModel);
 
-        //
+        //Reloads the JTable when the GUI is opened
         populateJTable();
 
 
@@ -70,19 +69,23 @@ public class WorkoutManager extends JFrame {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Boolean field for checking if a name is already added
                 boolean nameFound = false;
 
+                //If empty, ask the user to populate it
                 if (workoutNameTB.getText().isEmpty()) {
 
-                    MessageDialogPopUp("Please enter in a Workout Name", "");
+                    errorMessagePopUp("Please enter in a Workout Name");
 
                 } else {
-
+                        //Checks for duplicate name through method call
+                        //If found, boolean will be true, will not add to DB
                         nameFound = checkForDupe();
                         System.out.println("Hit");
 
 
                 }
+                //If the name is NOT found, it will add it to the DB / Table
                 if (!nameFound) {
 
                     //Calls addWorkout method, adds the input to the DB
@@ -103,9 +106,6 @@ public class WorkoutManager extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                //Add Are you sure you want to leave
-
-                //if or switch statement
 
                 dispose();
 
@@ -123,17 +123,26 @@ public class WorkoutManager extends JFrame {
                 addWorkoutToGoogleCalendar();
             }
         });
+
+        /**
+         * Action listener for the delete button
+         * Calls the deleteWorkout method and deletes a selected row from the jtable
+         */
         deleteBTTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                //Calls delete workout method
                 deleteWorkout();
 
+                //Reloads the JTable
                 populateJTable();
 
             }
         });
     }
+
+
 
     /**
      * Method that checks for a duplicate entry in the DB
@@ -153,8 +162,6 @@ public class WorkoutManager extends JFrame {
         } else {
             //For loop that iterates trough the vector of saved workouts, element index = name field, goes down the rows (element i)
             for (int i = 0; i < getAllWorkoutsVector.size(); i++) {
-//                Object dupeName = getAllWorkoutsVector.elementAt(0);
-//                Object iteration = getAllWorkoutsVector.elementAt(i);
 
                 Vector dupeNameVector = getAllWorkoutsVector.elementAt(i);
 
@@ -162,14 +169,16 @@ public class WorkoutManager extends JFrame {
 
                 //If the element in the column name = the iteration, it is already in the DB
                 //Asks user to input a unique name
+                //Sets boolean to true
                 if (testName.equalsIgnoreCase(uniqueName) ){
-                    MessageDialogPopUp("The Name is already added, please enter a unique name! ", "");
+                    errorMessagePopUp("The Name is already added, please enter a unique name! ");
+
                     return true;
                 }
             }
 
         }
-
+        //Returns false if the name is unique
         return false;
     }
 
@@ -188,10 +197,10 @@ public class WorkoutManager extends JFrame {
         String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(dateStartSpinner.getValue());
         String endDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(endDateSpinner.getValue());
 
-
+        //Adds input into the workout model, will be used to add to the BD
         WorkoutModel workoutModel = new WorkoutModel(workoutName, workoutBodyPart, movements, weight, date, endDate);
 
-        //
+        //Tries to add to the DB using the workout model
         try {
 
             workoutDB.addNewWorkout(workoutModel);
@@ -204,7 +213,7 @@ public class WorkoutManager extends JFrame {
     }
 
     /**
-     *
+     *Gets UI from the GUI and passes it to the myNewEvent method through paramaters
      */
     protected void addWorkoutToGoogleCalendar(){
 
@@ -218,10 +227,12 @@ public class WorkoutManager extends JFrame {
         String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(dateStartSpinner.getValue());
         String endDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(endDateSpinner.getValue());
 
+        //Tries to send it to myNewEvent method
         try {
 
             CalendarQuickstart.myNewEvent(workoutName, workoutBodyPart, movements, weight, date, endDate);
 
+            //Catches any Exception that rises and prints a message
         } catch (Exception exe) {
             System.out.println("Error adding Workout to the DB" + exe);
         }
@@ -230,10 +241,9 @@ public class WorkoutManager extends JFrame {
 
 
     /**
-     *
+     *Deletes a workout from the JTable my getting the selected row
+     * Uses Name as the identifier to delete
      */
-
-
     protected void deleteWorkout() {
 
         int row = workoutShowTable.getSelectedRow();
@@ -246,7 +256,17 @@ public class WorkoutManager extends JFrame {
 
         Object obj = workoutShowTable.getValueAt(row,0);
 
-        workoutDB.DeleteWorkout(obj.toString());
+        try {
+            //Tries to delete the selected workout, since it's getting a value at row,0 , setting it .toString()
+            //So the DB can delete the name
+            workoutDB.DeleteWorkout(obj.toString());
+
+            //Catches any Exception that rises and prints a message
+        } catch (Exception exe) {
+
+            System.out.println("Error deleting the workout" + exe);
+        }
+
 
     }
 
@@ -282,6 +302,7 @@ public class WorkoutManager extends JFrame {
         Vector workoutData = workoutModelVector;
         Vector getAllColumnNames = getColumnNames();
 
+        //Sets the table model with column names and row names from DB
         workoutTableModel.setDataVector(workoutData, getAllColumnNames );
 
         }
@@ -298,7 +319,6 @@ public class WorkoutManager extends JFrame {
         SpinnerDateModel spinnerDateModel = new SpinnerDateModel(new Date(), new Date(0), new Date(30000000000000L), Calendar.DAY_OF_YEAR);
         dateStartSpinner.setModel(spinnerDateModel);
 
-        //
         JSpinner.DateEditor editor = new JSpinner.DateEditor(dateStartSpinner, "yyyy-MM-dd HH:mm:ss");
         DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
 
@@ -319,7 +339,6 @@ public class WorkoutManager extends JFrame {
         SpinnerDateModel spinnerDateModel = new SpinnerDateModel(new Date(), new Date(0), new Date(3000000000000L), Calendar.DAY_OF_YEAR);
         endDateSpinner.setModel(spinnerDateModel);
 
-        //
         JSpinner.DateEditor editor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd HH:mm:ss");
         DateFormatter formatter = (DateFormatter) editor.getTextField().getFormatter();
 
@@ -351,17 +370,14 @@ public class WorkoutManager extends JFrame {
         }
     }
 
-    /**
-     * String used for user input validation, if something is NULL in a REQUIRED value,
-     * this will make a popup with the message saying what is null and sets it to ""
-     * @param message
-     * @param initialValue
-     * @return
-     */
-    String MessageDialogPopUp(String message, String initialValue) {
-        return JOptionPane.showInputDialog(this, message, initialValue);
-    }
 
+    /**
+     *
+     * @param message
+     */
+    private void errorMessagePopUp(String message) {
+        JOptionPane.showMessageDialog(WorkoutManager.this, message, "Error" , JOptionPane.ERROR_MESSAGE);
+    }
 
 }
 

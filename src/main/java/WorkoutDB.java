@@ -9,7 +9,9 @@ public class WorkoutDB {
     private String db_url;
 
     /**
-     *
+     *Creates the workout table if it does not exist
+     * Name is unique , the rest is optional
+     * Validation for having a unique name is done in a seperate method
      * @param database
      */
     WorkoutDB(String database) {
@@ -35,7 +37,8 @@ public class WorkoutDB {
     }
 
     /**
-     *
+     *Adds a workout from UI
+     * Uses workout model as the parameters to pass the values into the DB
      * @param workoutModel
      */
     public void addNewWorkout(WorkoutModel workoutModel) {
@@ -61,7 +64,7 @@ public class WorkoutDB {
 
 
     /**
-     *
+     *Deletes an entry from the DB where name = the UI
      * @param WorkoutName
      */
     public void DeleteWorkout(String WorkoutName) {
@@ -80,8 +83,8 @@ public class WorkoutDB {
     }
 
     /**
-     *
-     * @return
+     * A Vector of vectors that contain all the workouts that were saved to the DB
+     * @return a vector of workouts
      */
     public Vector<Vector> getAllWorkouts() {
 
@@ -102,7 +105,7 @@ public class WorkoutDB {
                 String endDateInput = workoutRS.getString("enddateinput");
 
 
-                //
+                //New vector that contains all the workouts that were saved to the DB
                 Vector vector = new Vector();
 
                 vector.add(name);
@@ -118,7 +121,7 @@ public class WorkoutDB {
 
             return workoutModelVector;
 
-
+            //Catches SQL exception, prints a message with the error
         } catch (SQLException sqle) {
             throw new RuntimeException("Error getting all Workouts: " + sqle);
 
