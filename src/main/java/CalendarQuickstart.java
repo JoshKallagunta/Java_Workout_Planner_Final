@@ -73,7 +73,7 @@ public class CalendarQuickstart {
      * @param weight UI from the weight TB in GUI
      * @param startingDate UI from the start date spinner in GUI
      * @param endingDate UI from the end date spinner in GUI
-     * @return
+     * @return the new created event
      * @throws IOException
      * @throws GeneralSecurityException
      */
@@ -108,6 +108,7 @@ public class CalendarQuickstart {
 
         //executes a new event through the UI of the user
         myEvent = service.events().insert(calId, myEvent).execute();
+
 
         return myEvent;
 

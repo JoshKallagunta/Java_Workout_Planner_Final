@@ -377,7 +377,7 @@ public class WorkoutManager extends JFrame {
 
 
     /**
-     *A generic error message that displays the error, in the method that it is displayed
+     * A generic error message that displays the error, in the method that it is displayed
      * @param message
      */
     private void errorMessagePopUp(String message) {
