@@ -16,8 +16,6 @@ public class WorkoutManager extends JFrame {
     private JComboBox bodyPartTB;
     private JLabel numOfWeightTB;
     private JLabel dateLabel;
-    private JTextField startTime;
-    private JTextField endTime;
     private JButton saveButton;
     private JTable workoutShowTable;
     private JButton addToCalendarButton;
@@ -27,6 +25,7 @@ public class WorkoutManager extends JFrame {
     private JTextField weightTB;
     private JButton quitButton;
     private JButton deleteBTTN;
+
 
     //DB initlization
     private WorkoutDB workoutDB;
@@ -192,6 +191,7 @@ public class WorkoutManager extends JFrame {
         workoutName = workoutName.trim();
         String workoutBodyPart = bodyPartTB.getSelectedItem().toString();
         String movements = workoutMovementsCB.getSelectedItem().toString();
+
         int weight = Integer.parseInt(weightTB.getText());
 
         String date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(dateStartSpinner.getValue());
@@ -250,6 +250,8 @@ public class WorkoutManager extends JFrame {
 
         if (row < 0) {
             System.out.println("message");
+            JOptionPane.showMessageDialog(null, "You Must Select a Row to Delete", "Error", JOptionPane.ERROR_MESSAGE);
+
             return;
         }
         final int column = workoutShowTable.getSelectedColumn();
@@ -349,6 +351,8 @@ public class WorkoutManager extends JFrame {
     }
 
 
+
+
     /**
      * Populates the bodypart combobox from an array of bodyparts in the WorkoutModel class
      */
@@ -371,8 +375,9 @@ public class WorkoutManager extends JFrame {
     }
 
 
+
     /**
-     *
+     *A generic error message that displays the error, in the method that it is displayed
      * @param message
      */
     private void errorMessagePopUp(String message) {

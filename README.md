@@ -7,14 +7,16 @@
 - It has a GUI and a Table for a workout entry and view 
 - Users can add, delete, or create an event with the Google Calendar API to view on a calendar
 - Helpful comments and user input handling so the App does'nt crash if there's bad data
-- No known bugs at this time 
+
+**Known Bugs:**
+- Users can enter string into the "weight" (int) textbox
 
 **How to run:** 
 
 - To get Google API functional, you will need to get your own credentials.json
 - Go to this link: https://developers.google.com/calendar/quickstart/js 
 - Click "Enable the Google Calendar API" and you will be provided with a credentials.json through a download 
-- Take that file, and add it into Workout>src>main>resources
+- Take that file, and add it into Workout>src>main>resources (if there is no 'resources' folder, create one in the 'main' directory)
 - (Pom.xml already has support for all libraries used in this App)
 - (DB url will work with any computer)
 - Finally: Run Main and start using the App
