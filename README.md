@@ -1,4 +1,4 @@
-#Workout Planner# 
+#Workout Planner
 
 **Josh Kallagunta's project for ITEC 2454 Java Programming.**
 
